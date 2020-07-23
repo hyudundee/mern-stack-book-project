@@ -24,17 +24,16 @@ function testWithCallbacks(callback) {
         return;
       }
       console.log('Result of insert:\n', result.insertedId);
-      collection.find({ _id: result.insertedId })
-        .toArray((findErr, docs) => {
-          if (findErr) {
-            client.close();
-            callback(findErr);
-            return;
-          }
-          console.log('Result of find:\n', docs);
+      collection.find({ _id: result.insertedId }).toArray((findErr, docs) => {
+        if (findErr) {
           client.close();
-          callback();
-        });
+          callback(findErr);
+          return;
+        }
+        console.log('Result of find:\n', docs);
+        client.close();
+        callback();
+      });
     });
   });
 }
@@ -52,8 +51,7 @@ async function testWithAsync() {
     const result = await collection.insertOne(employee);
     console.log('Result of insert:\n', result.insertedId);
 
-    const docs = await collection.find({ _id: result.insertedId })
-      .toArray();
+    const docs = await collection.find({ _id: result.insertedId }).toArray();
     console.log('Result of find:\n', docs);
   } catch (err) {
     console.log(err);
